@@ -1,5 +1,5 @@
 
-# MiniML
+# MiniML -- Spring 2022
 
 An interpreter written in OCaml for a subset of the OCaml language. \
 Independently developed as a final project for Harvard's CS51 course.
