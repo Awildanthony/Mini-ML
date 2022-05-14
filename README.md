@@ -19,10 +19,10 @@ Included in the original basic source code template written and provided by the 
 ## .merlin 
 An error-detecting software working in collaboration with PKG CS51Utils and PKG graphics.
 
-## CS51 Final Project Writeup
+## Final Project Writeup
 A writeup report detailing my implementation of MiniML and its functionality, including what subsets of the OCaml language it supports as an interpreter in a substitution envrionment and dynamically- & lexically-scoped envrionments, with examples.
 
-## CS51 Final Project Description
+## Final Project Description
 A PDF containing the project description and required specifications in their entirety, taken directly from Harvard CS51's online textbook. 
 
 ## evaluation.ml
