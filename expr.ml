@@ -81,16 +81,13 @@ let vars_of_list : string list -> varidset =
 let rec free_vars (exp : expr) : varidset =
   match exp with 
   | Var varid -> SS.singleton varid
-  | Num _int -> SS.empty
-  | Float _float -> SS.empty
-  | Bool _bool -> SS.empty
+  | Num _ | Float _ | Bool _ | Raise | Unassigned -> SS.empty
   | Unop (_unop, expr) -> free_vars expr
   | Binop (_binop, expr1, expr2) -> SS.union (free_vars expr1)
                                              (free_vars expr2)
-  | Conditional (expr1, expr2, expr3) -> 
-      SS.union (free_vars expr1) 
-               (SS.union (free_vars expr2) 
-                         (free_vars expr3))
+  | Conditional (expr1, expr2, expr3) -> SS.union (free_vars expr1) 
+                                                (SS.union (free_vars expr2) 
+                                                          (free_vars expr3))
   | Fun (name, expr) -> SS.diff (free_vars expr) 
                                 (SS.singleton name)
   | Let (name, def, body) -> SS.union (free_vars def)
@@ -99,8 +96,6 @@ let rec free_vars (exp : expr) : varidset =
   | Letrec (name, def, body) -> SS.diff (SS.union (free_vars def) 
                                                   (free_vars body))
                                         (SS.singleton name)
-  | Raise -> SS.empty
-  | Unassigned -> SS.singleton "Unassigned"
   | App (expr1, expr2) -> SS.union (free_vars expr1) 
                                    (free_vars expr2) ;;
   
@@ -141,7 +136,7 @@ let rec subst (var_name : varid) (repl : expr) (exp : expr) : expr =
       | Var varid -> if varid = var_name 
                       then repl (* match vars with var to be substituted *)
                      else exp (* otherwise ignore *)
-      | Num _ |Float _ | Bool _ | Raise | Unassigned -> exp
+      | Num _ | Float _ | Bool _ | Raise | Unassigned -> exp
       | Unop (unop, expr) -> Unop (unop, sub expr)
       | Binop (binop, expr1, expr2) -> Binop (binop, sub expr1, sub expr2)
       | Conditional (ex1, ex2, ex3) -> Conditional (sub ex1, sub ex2, sub ex3)
@@ -156,7 +151,7 @@ let rec subst (var_name : varid) (repl : expr) (exp : expr) : expr =
                                    then Let (name, sub def, sub body)
                                  else Let (name, sub def, sub_new name body)
       | Letrec (name, def, body) -> if name = var_name 
-                                      then Letrec (name, def, body)
+                                      then exp
                                     else if not_freevar name 
                                       then Letrec (name, sub def, sub body)
                                     else Letrec (newname,
