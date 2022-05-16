@@ -95,11 +95,11 @@ module Env : ENV =
       match v with 
       | Val exp -> exp_to_concrete_string exp (* dont include env *)
       | Closure (exp, env) -> if printenvp (* include env *)
-                                then "Closure(" ^
-                                     exp_to_concrete_string exp ^ 
-                                     ", " ^
-                                     env_to_string env ^
-                                     ")"
+                              then "Closure(" ^
+                                    exp_to_concrete_string exp ^ 
+                                    ", " ^
+                                    env_to_string env ^
+                                    ")"
                               else exp_to_concrete_string exp (* dont *)
 
     (* Take an environment env and return its string representation *)
@@ -234,7 +234,7 @@ let rec evaluator (sub : bool)
     | Letrec (name, def, body) -> 
         if sub then 
           (let def' = subst name (Letrec(name, def, Var name)) def in 
-            eval_ignore (subst name (extract_expr (eval_ignore def')) body))
+          eval_ignore (subst name (extract_expr (eval_ignore def')) body))
         else let name' = ref (Val Unassigned) in 
                let env' = extend env name name' in 
                  name' := eval_include def env';
@@ -284,4 +284,4 @@ let eval_e _ =
    above, not the `evaluate` function, so it doesn't matter how it's
    set when you submit your solution.) *)
    
-let evaluate = eval_s ;;
+let evaluate = eval_l ;;
